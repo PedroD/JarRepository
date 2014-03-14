@@ -51,6 +51,9 @@ public final class JarLoader {
 		String[] parsed = parseField(fileName, "Import-Package");
 		if (parsed == null)
 			return null;
+		/*
+		 * Separate the package names from their versions, if declared.
+		 */
 		for (String entry : parsed) {
 			String[] packageName = entry.split(";");
 			packageAndVersion.put(packageName[0], parsePackageVersion(entry));
@@ -70,6 +73,9 @@ public final class JarLoader {
 		String[] parsed = parseField(fileName, "Export-Package");
 		if (parsed == null)
 			return null;
+		/*
+		 * Separate the package names from their versions, if declared.
+		 */
 		for (String entry : parsed) {
 			String[] packageName = entry.split(";");
 			packageAndVersion.put(packageName[0], parsePackageVersion(entry));
@@ -120,9 +126,9 @@ public final class JarLoader {
 	 * Parses a given field from the jar's manifest.mf file.
 	 * 
 	 * @param fileName
-	 *            the jar file name path.
+	 *            the jar file path.
 	 * @param fieldName
-	 *            the desired field name.
+	 *            the desired manifest field name.
 	 * @return an array with the entries in that field.
 	 */
 	private static String[] parseField(String fileName, String fieldName) {
@@ -132,11 +138,11 @@ public final class JarLoader {
 
 		/*
 		 * Divide the file in two parts, the first one is trash the second one
-		 * contains the desired package names and some trash appended.
+		 * contains the desired entries and some trash appended.
 		 */
 		String[] tmp1 = manifest.split(fieldName + ":");
 		if (tmp1.length != 2)
-			return null; // No exports
+			return null; // No entries for that field.
 		String[] tmp2 = tmp1[1].split("\n");
 
 		/*
@@ -152,7 +158,7 @@ public final class JarLoader {
 		}
 
 		/*
-		 * Separate each entry name and take out the extra spaces.
+		 * Separate each entry and take out the extra spaces.
 		 */
 		String[] entries = sb.toString().split(",");
 		for (int i = 0; i < entries.length; i++) {
