@@ -1,6 +1,8 @@
 package simplesolutions.dependencyserver.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,11 @@ public final class XMLDataBase {
 	/** The Constant FILE_NAME. */
 	private static final String FILE_NAME = "contents.xml";
 
-	/** The file handler. */
-	private static File fileHandler = null;
+	/** The file in. */
+	private static FileInputStream fileIn = null;
+
+	/** The file out. */
+	private static FileOutputStream fileOut = null;
 
 	/** The Constant registry. */
 	private static final List<XMLParseable> registry = new ArrayList<XMLParseable>();
@@ -32,10 +37,48 @@ public final class XMLDataBase {
 			if (!fileHandler.exists()) {
 				fileHandler.createNewFile();
 			}
+			fileIn = new FileInputStream(fileHandler);
+			fileOut = new FileOutputStream(fileHandler);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			fileHandler = null;
+			return false;
+		}
+	}
+
+	/**
+	 * Close file.
+	 * 
+	 * @return true, if successful
+	 */
+	private static boolean closeFile() {
+		try {
+			fileIn.close();
+			fileOut.flush();
+			fileOut.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Save data into XML file.
+	 * 
+	 * @return true, if successful
+	 */
+	public static boolean save() {
+		try {
+			if (!openFile())
+				return false;
+			for (XMLParseable o : registry)
+				fileOut.write((o.toXML() + "\n").getBytes());
+			if (!closeFile())
+				return false;
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -71,6 +114,13 @@ public final class XMLDataBase {
 		 * @return a XML representation of this object.
 		 */
 		String toXML();
+
+		/**
+		 * Read from xml.
+		 * 
+		 * @return true, if successful
+		 */
+		boolean fromXML();
 	}
 
 }
