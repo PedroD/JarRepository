@@ -14,6 +14,26 @@ import java.util.List;
  */
 public final class XMLDataBase {
 
+	/**
+	 * The Interface XMLParseable.
+	 */
+	public interface XMLParseable {
+
+		/**
+		 * Read from xml.
+		 * 
+		 * @return true, if successful
+		 */
+		boolean fromXML();
+
+		/**
+		 * To xml.
+		 * 
+		 * @return a XML representation of this object.
+		 */
+		String toXML();
+	}
+
 	/** The Constant FILE_NAME. */
 	private static final String FILE_NAME = "contents.xml";
 
@@ -25,6 +45,23 @@ public final class XMLDataBase {
 
 	/** The Constant registry. */
 	private static final List<XMLParseable> registry = new ArrayList<XMLParseable>();
+
+	/**
+	 * Close file.
+	 * 
+	 * @return true, if successful
+	 */
+	private static boolean closeFile() {
+		try {
+			fileIn.close();
+			fileOut.flush();
+			fileOut.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	/**
 	 * Open file.
@@ -39,23 +76,6 @@ public final class XMLDataBase {
 			}
 			fileIn = new FileInputStream(fileHandler);
 			fileOut = new FileOutputStream(fileHandler);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * Close file.
-	 * 
-	 * @return true, if successful
-	 */
-	private static boolean closeFile() {
-		try {
-			fileIn.close();
-			fileOut.flush();
-			fileOut.close();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -101,26 +121,6 @@ public final class XMLDataBase {
 	 */
 	public void removeObject(XMLParseable o) {
 		registry.remove(o);
-	}
-
-	/**
-	 * The Interface XMLParseable.
-	 */
-	public interface XMLParseable {
-
-		/**
-		 * To xml.
-		 * 
-		 * @return a XML representation of this object.
-		 */
-		String toXML();
-
-		/**
-		 * Read from xml.
-		 * 
-		 * @return true, if successful
-		 */
-		boolean fromXML();
 	}
 
 }
