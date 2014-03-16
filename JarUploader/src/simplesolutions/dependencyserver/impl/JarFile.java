@@ -23,7 +23,7 @@ public final class JarFile implements XMLParseable {
 		/**
 		 * The Enum ComparisonMethod.
 		 */
-		private enum ComparisonMethod {
+		public enum ComparisonMethod {
 
 			/** The equal. */
 			EQUAL,
