@@ -127,12 +127,13 @@ public final class JarFile implements XMLParseable {
 		 * 
 		 * @param packageNameEntry
 		 *            the package name entry.
-		 * @return the string with the version as it is in the manifest.
+		 * @return the string with the version as it is in the manifest, or
+		 *         "0.0.0" if no version is declared.
 		 */
 		private String getPackageVersion(String packageNameEntry) {
 			String[] tmp1 = packageNameEntry.split("version=\"");
 			if (tmp1.length != 2)
-				return null; // No version declared
+				return "0.0.0"; // No version declared
 			String[] version = tmp1[1].split("\""); // split over the last
 													// quotation
 													// mark.
@@ -158,7 +159,7 @@ public final class JarFile implements XMLParseable {
 		public boolean isCompatible(PackageVersionRange other) {
 			if (this.isVersionRange() && other.isVersionRange())
 				return false; // Cannot compare two ranges!
-			if (this.isVersionRange()) {
+			if (this.isVersionRange() || !other.isVersionRange()) {
 				boolean minTest = false;
 				boolean maxTest = false;
 				/*
@@ -200,8 +201,9 @@ public final class JarFile implements XMLParseable {
 					break;
 				}
 				return minTest && maxTest;
-			} else
+			} else {
 				return other.isCompatible(this);
+			}
 		}
 
 		/**
@@ -252,14 +254,16 @@ public final class JarFile implements XMLParseable {
 		this.exportedPackages = new HashMap<String, PackageVersionRange>();
 		this.importedPackages = new HashMap<String, PackageVersionRange>();
 		for (String p : importedPackages)
-			this.importedPackages.put(p, new PackageVersionRange(p));
+			this.importedPackages.put(p.split(";")[0], new PackageVersionRange(
+					p));
 		for (String p : exportedPackages)
-			this.exportedPackages.put(p, new PackageVersionRange(p));
+			this.exportedPackages.put(p.split(";")[0], new PackageVersionRange(
+					p));
 	}
 
 	@Override
 	public boolean fromXML() {
-		//TODO:
+		// TODO:
 		return false;
 	}
 
