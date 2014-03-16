@@ -109,8 +109,9 @@ public final class XMLDataBase {
 	 * @param o
 	 *            the XML Parseable object
 	 */
-	public void addObject(XMLParseable o) {
-		registry.add(o);
+	public static void addObject(XMLParseable o) {
+		if (o != null)
+			registry.add(o);
 	}
 
 	/**
@@ -119,8 +120,9 @@ public final class XMLDataBase {
 	 * @param o
 	 *            the XML Parseable object
 	 */
-	public void removeObject(XMLParseable o) {
-		registry.remove(o);
+	public static void removeObject(XMLParseable o) {
+		if (o != null)
+			registry.remove(o);
 	}
 
 }

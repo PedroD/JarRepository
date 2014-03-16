@@ -85,29 +85,8 @@ public final class JarLoader {
 		return null;
 	}
 
-	/**
-	 * The main method just for testing.
-	 * 
-	 * @param args
-	 *            the args
-	 */
-	public static void main(String[] args) {
-		String fileName = "d:\\bundle.jar";
-		String[] m;
-		m = getExportedPackages(fileName);
-
-		if (m != null) {
-			System.out.println("Exports:");
-			for (String e : m)
-				System.out.println(e);
-		}
-
-		m = getImportedPackages(fileName);
-		if (m != null) {
-			System.out.println("\nImports:");
-			for (String e : m)
-				System.out.println(e);
-		}
+	public static boolean isValidJarFileWithManifest(String fileName) {
+		return loadJarFile(fileName) != null;
 	}
 
 	/**
