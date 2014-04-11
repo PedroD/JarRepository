@@ -18,7 +18,7 @@ public final class JarBundleFile implements XMLParseable {
 	/**
 	 * The Class PackageVersion.
 	 */
-	public final static class PackageVersionRange {
+	public final static class PackageVersion {
 
 		/**
 		 * The Enum ComparisonMethod.
@@ -59,7 +59,7 @@ public final class JarBundleFile implements XMLParseable {
 		 *            the package descriptor as it is in a manifest file. Eg.:
 		 *            <code>javax.wsdl.xml;version="1.5"</code>.
 		 */
-		public PackageVersionRange(String packageDescriptor) {
+		public PackageVersion(String packageDescriptor) {
 			String versionRange = getPackageVersion(packageDescriptor);
 			this.versionString = versionRange;
 			if (versionRange.contains(",")) { // Is a version range?
@@ -114,6 +114,18 @@ public final class JarBundleFile implements XMLParseable {
 		}
 
 		/**
+		 * Gets the concrete version, assuming this is not a version range.
+		 * 
+		 * @return the concrete version
+		 */
+		public Version getConcreteVersion() {
+			if (this.isVersionRange() == true)
+				throw new IllegalAccessError(
+						"This package version is not a concrete version!");
+			return getMinVersion();
+		}
+
+		/**
 		 * Gets the min version comparison method.
 		 * 
 		 * @return the min version comparison method
@@ -143,39 +155,45 @@ public final class JarBundleFile implements XMLParseable {
 		/**
 		 * Checks if the version range is compatible.
 		 * <p>
-		 * <b>Note:</b> One of the PackageVersionRange being compared must have
+		 * <b>Note:</b> One of the PackageVersion being compared must have
 		 * a concrete version instead of a range of versions! Otherwise no
 		 * comparison can be made.<br>
 		 * i.e. The exported packages provide a concrete version while imported
 		 * packages support a given range of versions. You can only compare a
 		 * version with a version range, not two versions ranges. Therefore you
-		 * can only compare a PackageVersionRange from an exported package with
-		 * the PackageVersionRange of an imported package.
+		 * can only compare a PackageVersion from an exported package with
+		 * the PackageVersion of an imported package.
 		 * 
 		 * @param other
 		 *            the other version range to compare.
 		 * @return true, if is compatible
 		 */
-		public boolean isCompatible(PackageVersionRange other) {
+		public boolean isCompatible(PackageVersion other) {
 			if (this.isVersionRange() && other.isVersionRange())
 				return false; // Cannot compare two ranges!
 			if (this.isVersionRange() || !other.isVersionRange()) {
 				boolean minTest = false;
 				boolean maxTest = false;
 				/*
+				 * If this version is 0.0.0 we don't care about versions, any
+				 * version will be compatible.
+				 */
+				if (this.getMinVersion().compareTo(new Version(0, 0, 0)) == 0)
+					return true;
+				/*
 				 * Compare with lower bound.
 				 */
 				switch (minVersionComparisonMethod) {
 				case EQUAL:
-					if (other.getMinVersion().compareTo(minVersion) == 0)
+					if (other.getConcreteVersion().compareTo(minVersion) == 0)
 						minTest = true;
 					break;
 				case EQUAL_OR_GREATER:
-					if (other.getMinVersion().compareTo(minVersion) >= 0)
+					if (other.getConcreteVersion().compareTo(minVersion) >= 0)
 						minTest = true;
 					break;
 				case GREATER:
-					if (other.getMinVersion().compareTo(minVersion) > 0)
+					if (other.getConcreteVersion().compareTo(minVersion) > 0)
 						minTest = true;
 					break;
 				default:
@@ -186,15 +204,15 @@ public final class JarBundleFile implements XMLParseable {
 				 */
 				switch (maxVersionComparisonMethod) {
 				case EQUAL:
-					if (other.getMinVersion().compareTo(maxVersion) == 0)
+					if (other.getConcreteVersion().compareTo(maxVersion) == 0)
 						maxTest = true;
 					break;
 				case EQUAL_OR_LOWER:
-					if (other.getMinVersion().compareTo(maxVersion) <= 0)
+					if (other.getConcreteVersion().compareTo(maxVersion) <= 0)
 						maxTest = true;
 					break;
 				case LOWER:
-					if (other.getMinVersion().compareTo(maxVersion) < 0)
+					if (other.getConcreteVersion().compareTo(maxVersion) < 0)
 						maxTest = true;
 					break;
 				default:
@@ -230,10 +248,10 @@ public final class JarBundleFile implements XMLParseable {
 	}
 
 	/** The exported packages. */
-	private final Map<String, PackageVersionRange> exportedPackages;
+	private final Map<String, PackageVersion> exportedPackages;
 
 	/** The imported packages. */
-	private final Map<String, PackageVersionRange> importedPackages;
+	private final Map<String, PackageVersion> importedPackages;
 
 	/** The name. */
 	private final String name;
@@ -251,16 +269,16 @@ public final class JarBundleFile implements XMLParseable {
 	public JarBundleFile(String name, String[] importedPackages,
 			String[] exportedPackages) {
 		this.name = name;
-		this.exportedPackages = new HashMap<String, PackageVersionRange>();
-		this.importedPackages = new HashMap<String, PackageVersionRange>();
+		this.exportedPackages = new HashMap<String, PackageVersion>();
+		this.importedPackages = new HashMap<String, PackageVersion>();
 		if (importedPackages != null)
 			for (String p : importedPackages)
 				this.importedPackages.put(p.split(";")[0],
-						new PackageVersionRange(p));
+						new PackageVersion(p));
 		if (exportedPackages != null)
 			for (String p : exportedPackages)
 				this.exportedPackages.put(p.split(";")[0],
-						new PackageVersionRange(p));
+						new PackageVersion(p));
 	}
 
 	@Override
@@ -274,8 +292,8 @@ public final class JarBundleFile implements XMLParseable {
 	 * 
 	 * @return the exported packages
 	 */
-	public ImmutableMap<String, PackageVersionRange> getExportedPackages() {
-		return new ImmutableMap<String, PackageVersionRange>(exportedPackages);
+	public ImmutableMap<String, PackageVersion> getExportedPackages() {
+		return new ImmutableMap<String, PackageVersion>(exportedPackages);
 	}
 
 	/**
@@ -283,8 +301,8 @@ public final class JarBundleFile implements XMLParseable {
 	 * 
 	 * @return the imported packages
 	 */
-	public ImmutableMap<String, PackageVersionRange> getImportedPackages() {
-		return new ImmutableMap<String, PackageVersionRange>(importedPackages);
+	public ImmutableMap<String, PackageVersion> getImportedPackages() {
+		return new ImmutableMap<String, PackageVersion>(importedPackages);
 	}
 
 	/**
@@ -298,9 +316,9 @@ public final class JarBundleFile implements XMLParseable {
 	 */
 	public boolean providesPackage(String packageNameManifest) {
 		String packageName = packageNameManifest.split(";")[0];
-		PackageVersionRange version = new PackageVersionRange(
+		PackageVersion version = new PackageVersion(
 				packageNameManifest);
-		for (Map.Entry<String, PackageVersionRange> e : this
+		for (Map.Entry<String, PackageVersion> e : this
 				.getExportedPackages().entrySet())
 			if (e.getKey().equals(packageName)
 					&& version.isCompatible(e.getValue()))
@@ -325,7 +343,7 @@ public final class JarBundleFile implements XMLParseable {
 		 * Print exported packages
 		 */
 		sb.append("\t<exported>\r\n");
-		for (Map.Entry<String, PackageVersionRange> entry : exportedPackages
+		for (Map.Entry<String, PackageVersion> entry : exportedPackages
 				.entrySet())
 			sb.append("\t\t<package name=\"" + entry.getKey() + "\" version=\""
 					+ entry.getValue() + "\" />\r\n");
@@ -334,7 +352,7 @@ public final class JarBundleFile implements XMLParseable {
 		 * Print imported packages
 		 */
 		sb.append("\t<imported>\r\n");
-		for (Map.Entry<String, PackageVersionRange> entry : importedPackages
+		for (Map.Entry<String, PackageVersion> entry : importedPackages
 				.entrySet())
 			sb.append("\t\t<package name=\"" + entry.getKey() + "\" version=\""
 					+ entry.getValue() + "\" />\r\n");

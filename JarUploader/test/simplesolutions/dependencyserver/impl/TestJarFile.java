@@ -1,6 +1,6 @@
 package simplesolutions.dependencyserver.impl;
 
-import simplesolutions.dependencyserver.impl.JarBundleFile.PackageVersionRange;
+import simplesolutions.dependencyserver.impl.JarBundleFile.PackageVersion;
 import junit.framework.TestCase;
 
 /**
@@ -100,99 +100,99 @@ public class TestJarFile extends TestCase {
 	 * Test version compatibility.
 	 */
 	public void testVersionCompatibility() {
-		PackageVersionRange versionRange;
-		PackageVersionRange concreteVersion;
+		PackageVersion versionRange;
+		PackageVersion concreteVersion;
 		/*
 		 * Test two concrete versions.
 		 */
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"1.5\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"1.5\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 		/*
 		 * Test one concrete version.
 		 */
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"[1,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"[1,2)\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 		/*
 		 * Test boundaries.
 		 */
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"[1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"[1.5,2)\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"1\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"0.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"0.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.5\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.5\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"1.9\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"1.9\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"[1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"[1.5,2]\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"[2,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"[2,2]\"");
 		assertTrue(versionRange.isCompatible(concreteVersion));
 		assertTrue(concreteVersion.isCompatible(versionRange));
 		/*
 		 * Test impossible comparisons.
 		 */
-		versionRange = new PackageVersionRange("goo.gle;version=\"[2,3]\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"[2,3]\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"[1.5,2]\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"[1.5,2]\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(1.5,2]\"");
+		versionRange = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(1.5,2]\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 
-		versionRange = new PackageVersionRange("goo.gle;version=\"2\"");
-		concreteVersion = new PackageVersionRange("goo.gle;version=\"(2,2)\"");
+		versionRange = new PackageVersion("goo.gle;version=\"2\"");
+		concreteVersion = new PackageVersion("goo.gle;version=\"(2,2)\"");
 		assertFalse(versionRange.isCompatible(concreteVersion));
 		assertFalse(concreteVersion.isCompatible(versionRange));
 	}

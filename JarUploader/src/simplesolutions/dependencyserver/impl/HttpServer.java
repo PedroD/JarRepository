@@ -80,7 +80,7 @@ public final class HttpServer extends Thread {
 			 * Remove the initial / from the url to end up only with the package
 			 * name.
 			 */
-			String[] packageNameManifest = url.split("/");
+			String[] packageNameManifest = url.replace("%22", "\"").split("/");
 			String packagePath = Main.getJarRegistry().getJarProvidingPackage(
 					packageNameManifest[1]);
 			/*
