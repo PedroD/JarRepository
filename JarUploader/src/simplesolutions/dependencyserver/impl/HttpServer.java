@@ -22,10 +22,12 @@ public final class HttpServer extends Thread {
 
 	/**
 	 * Instantiates a new http server.
-	 *
-	 * @param port the port number
+	 * 
+	 * @param port
+	 *            the port number
 	 */
 	public HttpServer(int port) {
+		super("Http Server");
 		listener = new HttpPortListener(port, this);
 	}
 
@@ -59,7 +61,13 @@ public final class HttpServer extends Thread {
 	 * @return
 	 */
 	public String getPage(String url) {
-		return url;
+		String[] packageNameManifest = url.split("/");
+		String packagePath = Main.getJarRegistry().getJarProvidingPackage(
+				packageNameManifest[1]);
+		if (packagePath == null)
+			return responseHeader;
+		else
+			return responseHeader + packagePath;
 	}
 
 	/**

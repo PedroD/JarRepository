@@ -2,14 +2,35 @@ package simplesolutions.dependencyserver.impl;
 
 import java.io.File;
 
+/**
+ * The Class Main.
+ */
 public final class Main {
 
+	/** The jar registry. */
+	private static BundleDatabase jarRegistry;
+
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
-		new JarRegistry().start();
+		jarRegistry = new BundleDatabase();
+		jarRegistry.start();
 		File file = new File(".");
-		System.out.println("HINT: Put your bundles in " + file.getAbsolutePath()
-				+ " inside the jars/ folder.");
+		System.out.println("HINT: Put your bundles in "
+				+ file.getAbsolutePath() + " inside the jars/ folder.");
 		new HttpServer(80).start();
+	}
+
+	/**
+	 * Gets the jar registry.
+	 *
+	 * @return the jar registry
+	 */
+	public static BundleDatabase getJarRegistry() {
+		return jarRegistry;
 	}
 
 }

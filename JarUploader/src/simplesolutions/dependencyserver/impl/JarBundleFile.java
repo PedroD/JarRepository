@@ -13,7 +13,7 @@ import simplesolutions.util.ImmutableMap;
  * 
  * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  */
-public final class JarFile implements XMLParseable {
+public final class JarBundleFile implements XMLParseable {
 
 	/**
 	 * The Class PackageVersion.
@@ -248,7 +248,7 @@ public final class JarFile implements XMLParseable {
 	 * @param exportedPackages
 	 *            the exported packages
 	 */
-	public JarFile(String name, String[] importedPackages,
+	public JarBundleFile(String name, String[] importedPackages,
 			String[] exportedPackages) {
 		this.name = name;
 		this.exportedPackages = new HashMap<String, PackageVersionRange>();
@@ -283,6 +283,27 @@ public final class JarFile implements XMLParseable {
 	 */
 	public ImmutableMap<String, PackageVersionRange> getImportedPackages() {
 		return new ImmutableMap<String, PackageVersionRange>(importedPackages);
+	}
+
+	/**
+	 * Seeks for a given package with a given version inside this jar file
+	 * (bundle).
+	 * 
+	 * @param packageNameManifest
+	 *            the package name in the OSGi manifest.mf format, ex.:
+	 *            <i>foo.bar.lol;version="1.2.3"</i> or just <i>foo.bar.lol</i>
+	 * @return true, if successful
+	 */
+	public boolean providesPackage(String packageNameManifest) {
+		String packageName = packageNameManifest.split(";")[0];
+		PackageVersionRange version = new PackageVersionRange(
+				packageNameManifest);
+		for (Map.Entry<String, PackageVersionRange> e : this
+				.getExportedPackages().entrySet())
+			if (e.getKey().equals(packageName)
+					&& version.isCompatible(e.getValue()))
+				return true;
+		return false;
 	}
 
 	/**

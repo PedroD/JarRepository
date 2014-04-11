@@ -27,6 +27,7 @@ public final class HttpPortListener extends Thread {
 	 *            to listen
 	 */
 	public HttpPortListener(int port, HttpServer s) {
+		super("Http Port Listener");
 		this.port = port;
 		this.myServer = s;
 		try {
@@ -92,6 +93,7 @@ public final class HttpPortListener extends Thread {
 
 		public ConnectionThread(BufferedReader in, DataOutputStream out,
 				Socket conn) {
+			super("Connection Thread");
 			this.in = in;
 			this.out = out;
 			this.conn = conn;
@@ -130,7 +132,7 @@ public final class HttpPortListener extends Thread {
 				conn.close();
 			} catch (Exception e) {
 				System.err.println("Connection canceled.");
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 

@@ -1,4 +1,4 @@
-<jar name="jars\ggg.jar">
+<jar name="jars\hhhh.jar">
 	<exported>
 		<package name="lumina.extensions.drivers.x10" version="0.0.0">
 	</exported>

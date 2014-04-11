@@ -1,6 +1,6 @@
 package simplesolutions.dependencyserver.impl;
 
-import simplesolutions.dependencyserver.impl.JarFile.PackageVersionRange;
+import simplesolutions.dependencyserver.impl.JarBundleFile.PackageVersionRange;
 import junit.framework.TestCase;
 
 /**
@@ -23,7 +23,7 @@ public class TestJarFile extends TestCase {
 				"test.hogwarts;foo=\"bar\";atum=\"--\";version=\"1.6\"",
 				"test.ui;foo=\"bar\";version=\"[1,1]\"",
 				"test.foo.bar;foo=\"bar\";version=\"[1.3,2)\"", };
-		JarFile testFile = new JarFile("testfile.jar", importedPackages,
+		JarBundleFile testFile = new JarBundleFile("testfile.jar", importedPackages,
 				exportedPackages);
 		/*
 		 * Test imported packages
@@ -74,7 +74,7 @@ public class TestJarFile extends TestCase {
 				"test.hogwarts;foo=\"bar\";atum=\"--\";version=\"1.6\"",
 				"test.ui;foo=\"bar\";version=\"[1,1]\"",
 				"test.foo.bar;foo=\"bar\";version=\"[1.3,2)\"", };
-		JarFile testFile = new JarFile("testfile.jar", importedPackages,
+		JarBundleFile testFile = new JarBundleFile("testfile.jar", importedPackages,
 				exportedPackages);
 		/*
 		 * Test imported packages
@@ -209,7 +209,7 @@ public class TestJarFile extends TestCase {
 				"test.hogwarts;foo=\"bar\";atum=\"--\";version=\"1.6\"",
 				"test.ui;foo=\"bar\";version=\"[1,1]\"",
 				"test.foo.bar;foo=\"bar\";version=\"[1.3,2)\"", };
-		JarFile testFile = new JarFile("testfile.jar", importedPackages,
+		JarBundleFile testFile = new JarBundleFile("testfile.jar", importedPackages,
 				exportedPackages);
 		assertTrue(testFile.toXML().length() == 538);
 	}

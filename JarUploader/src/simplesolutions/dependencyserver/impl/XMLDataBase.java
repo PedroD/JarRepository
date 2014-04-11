@@ -86,11 +86,11 @@ public final class XMLDataBase {
 	 * 
 	 * @return true, if successful
 	 */
-	public synchronized static boolean save(Map<String, JarFile> registry) {
+	public synchronized static boolean save(Map<String, JarBundleFile> registry) {
 		try {
 			if (!openFile())
 				return false;
-			for (Map.Entry<String, JarFile> o : registry.entrySet())
+			for (Map.Entry<String, JarBundleFile> o : registry.entrySet())
 				fileOut.write((o.getValue().toXML() + "\n").getBytes());
 			fileOut.flush();
 			if (!closeFile())

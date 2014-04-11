@@ -13,22 +13,21 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The Class JarRegistry.
+ * The Class BundleDatabase.
  * <p>
- * Looks into the repository directory waiting for new jars to appear,
- * get modified or removed, in order to register them in the repository's
- * database.
+ * Looks into the repository directory waiting for new jars to appear, get
+ * modified or removed, in order to register them in the repository's database.
  * 
  * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  */
-public final class JarRegistry extends Thread {
+public final class BundleDatabase extends Thread {
 
-	/** The registry. */
-	private final Map<String, JarFile> registry;
+	/** The repository database. */
+	private final Map<String, JarBundleFile> repositoryDatabase;
 
 	/** The repository directory. */
 	private static final Path repositoryDirectory = Paths.get("jars");
@@ -40,10 +39,14 @@ public final class JarRegistry extends Thread {
 	private WatchKey watchKey;
 
 	/**
-	 * Instantiates a new jar registry.
+	 * Instantiates a new jar repositoryDatabase.
 	 */
-	public JarRegistry() {
-		registry = new HashMap<String, JarFile>();
+	public BundleDatabase() {
+		super("Jar Registry");
+		repositoryDatabase = new ConcurrentHashMap<String, JarBundleFile>();
+		/*
+		 * Create directory if it doesn't exist.
+		 */
 		try {
 			if (!repositoryDirectory.toFile().exists())
 				repositoryDirectory.toFile().mkdir();
@@ -85,7 +88,7 @@ public final class JarRegistry extends Thread {
 	}
 
 	/**
-	 * Updates jar registry.
+	 * Updates jar repositoryDatabase.
 	 * 
 	 * @param kind
 	 *            the kind of event occurred.
@@ -96,11 +99,11 @@ public final class JarRegistry extends Thread {
 		System.err.println("File modified: " + affectedFileName);
 		File affectedFile = new File(affectedFileName);
 		/*
-		 * File deleted? Remove it from our registry.
+		 * File deleted? Remove it from our repositoryDatabase.
 		 */
 		if (!affectedFile.exists()) {
 			System.err.println("File was deleted.");
-			registry.remove(affectedFileName);
+			repositoryDatabase.remove(affectedFileName);
 			updateContentsOfXML();
 			return;
 		}
@@ -130,11 +133,11 @@ public final class JarRegistry extends Thread {
 					.getImportedPackages(affectedFileName);
 			String[] exportedPackages = JarLoader
 					.getExportedPackages(affectedFileName);
-			registry.put(affectedFileName, new JarFile(affectedFileName,
+			repositoryDatabase.put(affectedFileName, new JarBundleFile(affectedFileName,
 					importedPackages, exportedPackages));
 			System.err.println("Bundle added with success!");
 		} else {
-			registry.remove(affectedFileName);
+			repositoryDatabase.remove(affectedFileName);
 			System.err.println("Not a valid bundle file!");
 		}
 		updateContentsOfXML();
@@ -173,6 +176,23 @@ public final class JarRegistry extends Thread {
 	 * Update contents.xml.
 	 */
 	private void updateContentsOfXML() {
-		XMLDataBase.save(registry);
+		XMLDataBase.save(repositoryDatabase);
+	}
+
+	/**
+	 * Seeks for a given package with a given version inside this jar/bundle
+	 * repositoryDatabase.
+	 * 
+	 * @param packageNameManifest
+	 *            the package name in the OSGi manifest.mf format, ex.:
+	 *            <i>foo.bar.lol;version="1.2.3"</i> or just <i>foo.bar.lol</i>
+	 * @return a string containing the jar/bundle relative path or null if no
+	 *         bundle provides a compatible package.
+	 */
+	public String getJarProvidingPackage(String packageNameManifest) {
+		for (Map.Entry<String, JarBundleFile> e : repositoryDatabase.entrySet())
+			if (e.getValue().providesPackage(packageNameManifest))
+				return e.getKey();
+		return null;
 	}
 }
