@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * XML DataBase used to store in a XML all the registered jars.
@@ -42,9 +41,6 @@ public final class XMLDataBase {
 
 	/** The file out. */
 	private static FileOutputStream fileOut = null;
-
-	/** The Constant registry. */
-	private static final List<XMLParseable> registry = new ArrayList<XMLParseable>();
 
 	/**
 	 * Close file.
@@ -86,14 +82,17 @@ public final class XMLDataBase {
 	/**
 	 * Save data into XML file.
 	 * 
+	 * @param registry
+	 * 
 	 * @return true, if successful
 	 */
-	public static boolean save() {
+	public synchronized static boolean save(Map<String, JarFile> registry) {
 		try {
 			if (!openFile())
 				return false;
-			for (XMLParseable o : registry)
-				fileOut.write((o.toXML() + "\n").getBytes());
+			for (Map.Entry<String, JarFile> o : registry.entrySet())
+				fileOut.write((o.getValue().toXML() + "\n").getBytes());
+			fileOut.flush();
 			if (!closeFile())
 				return false;
 			return true;
@@ -102,27 +101,4 @@ public final class XMLDataBase {
 			return false;
 		}
 	}
-
-	/**
-	 * Adds the object.
-	 * 
-	 * @param o
-	 *            the XML Parseable object
-	 */
-	public static void addObject(XMLParseable o) {
-		if (o != null)
-			registry.add(o);
-	}
-
-	/**
-	 * Removes the object.
-	 * 
-	 * @param o
-	 *            the XML Parseable object
-	 */
-	public static void removeObject(XMLParseable o) {
-		if (o != null)
-			registry.remove(o);
-	}
-
 }

@@ -1,6 +1,10 @@
 package simplesolutions.dependencyserver.impl;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -15,8 +19,9 @@ import java.util.Map;
 /**
  * The Class JarRegistry.
  * <p>
- * Looks into the jars folder waiting for new jars to appear, get modified or
- * removed, in order to register them in the repository's database.
+ * Looks into the repository directory waiting for new jars to appear,
+ * get modified or removed, in order to register them in the repository's
+ * database.
  * 
  * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  */
@@ -60,6 +65,9 @@ public final class JarRegistry extends Thread {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
+		/*
+		 * Watch for affected files in the repository folder.
+		 */
 		while (true) {
 			try {
 				watchKey = watcherService.take();
@@ -85,35 +93,86 @@ public final class JarRegistry extends Thread {
 	 *            the affected file.
 	 */
 	private void updateRegistry(String affectedFileName) {
-		/*
-		 * File deleted?
-		 */
+		System.err.println("File modified: " + affectedFileName);
 		File affectedFile = new File(affectedFileName);
+		/*
+		 * File deleted? Remove it from our registry.
+		 */
 		if (!affectedFile.exists()) {
-			XMLDataBase.removeObject(registry.remove(affectedFileName));
+			System.err.println("File was deleted.");
+			registry.remove(affectedFileName);
+			updateContentsOfXML();
 			return;
 		}
 		/*
-		 * Update its manifest data.
+		 * Is the file still being modified/locked?
+		 */
+		while (!affectedFile.canRead()) {
+			try {
+				System.err.println("File locked, will try again in 5 sec...");
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				return;
+			}
+		}
+		/*
+		 * Valid jar file?
+		 */
+		if (!isZipFile(affectedFile)) {
+			System.err.println("Not a valid JAR file.");
+			return;
+		}
+		/*
+		 * File added or modified? Update its manifest data.
 		 */
 		if (JarLoader.isValidJarFileWithManifest(affectedFileName)) {
 			String[] importedPackages = JarLoader
 					.getImportedPackages(affectedFileName);
 			String[] exportedPackages = JarLoader
 					.getExportedPackages(affectedFileName);
-				XMLDataBase.removeObject(o);
 			registry.put(affectedFileName, new JarFile(affectedFileName,
 					importedPackages, exportedPackages));
+			System.err.println("Bundle added with success!");
 		} else {
 			registry.remove(affectedFileName);
+			System.err.println("Not a valid bundle file!");
 		}
-		updateContentsXML();
+		updateContentsOfXML();
+	}
+
+	/**
+	 * Determine whether a file is a ZIP File.
+	 * 
+	 * @param file
+	 *            the file
+	 * @return true, if is zip file
+	 */
+	public boolean isZipFile(File file) {
+		if (file.isDirectory()) {
+			return false;
+		}
+		if (file.length() < 4) {
+			return false;
+		}
+		DataInputStream in;
+		try {
+			in = new DataInputStream(new BufferedInputStream(
+					new FileInputStream(file)));
+			int test = in.readInt();
+			in.close();
+			return test == 0x504b0304;
+		} catch (FileNotFoundException e) {
+			// Nothing to do here.
+		} catch (IOException e) {
+			// Nothing to do here.
+		}
+		return false;
 	}
 
 	/**
 	 * Update contents.xml.
 	 */
-	private void updateContentsXML() {
-		XMLDataBase.save();
+	private void updateContentsOfXML() {
+		XMLDataBase.save(registry);
 	}
 }

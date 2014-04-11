@@ -1,0 +1,31 @@
+<jar name="jars\ggg.jar">
+	<exported>
+		<package name="lumina.extensions.drivers.x10" version="0.0.0">
+	</exported>
+	<imported>
+		<package name="lumina.util" version="0.0.0">
+		<package name="lumina.extensions.properties.types.basic" version="0.0.0">
+		<package name="lumina.base.model.devices.status" version="0.0.0">
+		<package name="lumina.extensions.properties.validators.basic" version="0.0.0">
+		<package name="lumina" version="0.0.0">
+		<package name="lumina.base.properties" version="0.0.0">
+		<package name="lumina.base.transport" version="0.0.0">
+		<package name="codebase.streams" version="1.0.0">
+		<package name="lumina.extensions.properties.declarations.basic" version="0.0.0">
+		<package name="lumina.extensions.properties.declarations.temp" version="0.0.0">
+		<package name="lumina.core.osgi" version="0.0.0">
+		<package name="j.extensions.comm" version="1.0.0">
+		<package name="lumina.base.model" version="0.0.0">
+		<package name="lumina.persistence.device.dataPoint" version="0.0.0">
+		<package name="lumina.network.gateways" version="0.0.0">
+		<package name="lumina.network.sandbox" version="0.0.0">
+		<package name="lumina.network" version="0.0.0">
+		<package name="junit.framework" version="4.11.0">
+		<package name="lumina.network.drivers" version="0.0.0">
+		<package name="lumina.core.osgi.factories" version="0.0.0">
+		<package name="org.osgi.framework" version="1.7.0">
+		<package name="lumina.network.gateways.commands" version="0.0.0">
+		<package name="lumina.extensions.transport.rs232" version="0.0.0">
+	</imported>
+</jar>
+

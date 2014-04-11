@@ -36,6 +36,7 @@ public final class JarLoader {
 		return parseField(fileName, "Import-Package");
 	}
 
+	
 	/**
 	 * Gets the manifest.
 	 * 
@@ -44,30 +45,6 @@ public final class JarLoader {
 	 * @return the manifest
 	 */
 	private static String getManifest(String fileName) {
-		BufferedReader bf = loadJarFile(fileName);
-		try {
-			StringBuilder out = new StringBuilder();
-			String line;
-			while ((line = bf.readLine()) != null) {
-				out.append(line + "\n");
-			}
-			bf.close();
-			return out.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * Load jar file.
-	 * 
-	 * @param fileName
-	 *            the file name
-	 * @return the buffered reader
-	 */
-	@SuppressWarnings("resource")
-	private static BufferedReader loadJarFile(String fileName) {
 		ZipFile zip = null;
 		try {
 			zip = new ZipFile(fileName);
@@ -75,8 +52,16 @@ public final class JarLoader {
 					.hasMoreElements();) {
 				ZipEntry entry = (ZipEntry) e.nextElement();
 				if (entry.toString().equals("META-INF/MANIFEST.MF")) {
-					return new BufferedReader(new InputStreamReader(
-							zip.getInputStream(entry)));
+					BufferedReader bf = new BufferedReader(
+							new InputStreamReader(zip.getInputStream(entry)));
+					StringBuilder out = new StringBuilder();
+					String line;
+					while ((line = bf.readLine()) != null) {
+						out.append(line + "\n");
+					}
+					bf.close();
+					zip.close();
+					return out.toString();
 				}
 			}
 		} catch (IOException e) {
@@ -86,7 +71,7 @@ public final class JarLoader {
 	}
 
 	public static boolean isValidJarFileWithManifest(String fileName) {
-		return loadJarFile(fileName) != null;
+		return getManifest(fileName) != null;
 	}
 
 	/**
