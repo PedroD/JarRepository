@@ -253,12 +253,14 @@ public final class JarBundleFile implements XMLParseable {
 		this.name = name;
 		this.exportedPackages = new HashMap<String, PackageVersionRange>();
 		this.importedPackages = new HashMap<String, PackageVersionRange>();
-		for (String p : importedPackages)
-			this.importedPackages.put(p.split(";")[0], new PackageVersionRange(
-					p));
-		for (String p : exportedPackages)
-			this.exportedPackages.put(p.split(";")[0], new PackageVersionRange(
-					p));
+		if (importedPackages != null)
+			for (String p : importedPackages)
+				this.importedPackages.put(p.split(";")[0],
+						new PackageVersionRange(p));
+		if (exportedPackages != null)
+			for (String p : exportedPackages)
+				this.exportedPackages.put(p.split(";")[0],
+						new PackageVersionRange(p));
 	}
 
 	@Override
@@ -337,7 +339,7 @@ public final class JarBundleFile implements XMLParseable {
 			sb.append("\t\t<package name=\"" + entry.getKey() + "\" version=\""
 					+ entry.getValue() + "\">\n");
 		sb.append("\t</imported>\n");
-		sb.append("</jar>\n");
+		sb.append("</jar>");
 		return sb.toString();
 	}
 }

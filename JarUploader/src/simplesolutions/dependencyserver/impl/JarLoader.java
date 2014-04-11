@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,7 +38,6 @@ public final class JarLoader {
 		return parseField(fileName, "Import-Package");
 	}
 
-	
 	/**
 	 * Gets the manifest.
 	 * 
@@ -110,13 +111,43 @@ public final class JarLoader {
 		}
 
 		/*
+		 * Take out extras spaces that may exist.
+		 */
+		String entireFieldValue = sb.toString().replaceAll(" ", "");
+
+		/*
 		 * Separate each entry and take out the extra spaces.
 		 */
-		String[] entries = sb.toString().split(",");
-		for (int i = 0; i < entries.length; i++) {
-			entries[i] = entries[i].replaceAll(" ", ""); // Take spaces out
+		List<String> entries = new LinkedList<String>();
+		String packageName = "";
+		boolean insideQuote = false;
+		for (int i = 0; i < entireFieldValue.length(); i++) {
+			char c = entireFieldValue.charAt(i);
+			if (c == '"') {
+				/*
+				 * Parameter detected.
+				 */
+				insideQuote = !insideQuote;
+				packageName += c;
+			} else if (c == ',' && !insideQuote) {
+				/*
+				 * New package detected.
+				 */
+				entries.add(new String(packageName));
+				packageName = "";
+			} else {
+				packageName += c;
+			}
 		}
-		return entries;
+		/*
+		 * Add last accumulated entry.
+		 */
+		if (packageName != "")
+			entries.add(new String(packageName));
+		if (entries.size() == 0)
+			return null;
+		else
+			return entries.toArray(new String[entries.size()]);
 	}
 
 }
