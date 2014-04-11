@@ -9,6 +9,7 @@ public final class Main {
 		File file = new File(".");
 		System.out.println("HINT: Put your bundles in " + file.getAbsolutePath()
 				+ " inside the jars/ folder.");
+		new HttpServer(80).start();
 	}
 
 }
