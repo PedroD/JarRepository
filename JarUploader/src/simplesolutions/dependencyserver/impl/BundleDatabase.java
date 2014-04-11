@@ -55,6 +55,7 @@ public final class BundleDatabase extends Thread {
 					StandardWatchEventKinds.ENTRY_CREATE,
 					StandardWatchEventKinds.ENTRY_DELETE,
 					StandardWatchEventKinds.ENTRY_MODIFY);
+			populateBundleDatabase();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -133,8 +134,8 @@ public final class BundleDatabase extends Thread {
 					.getImportedPackages(affectedFileName);
 			String[] exportedPackages = JarLoader
 					.getExportedPackages(affectedFileName);
-			repositoryDatabase.put(affectedFileName, new JarBundleFile(affectedFileName,
-					importedPackages, exportedPackages));
+			repositoryDatabase.put(affectedFileName, new JarBundleFile(
+					affectedFileName, importedPackages, exportedPackages));
 			System.err.println("Bundle added with success!");
 		} else {
 			repositoryDatabase.remove(affectedFileName);
@@ -194,5 +195,20 @@ public final class BundleDatabase extends Thread {
 			if (e.getValue().providesPackage(packageNameManifest))
 				return e.getKey();
 		return null;
+	}
+
+	/**
+	 * Populates the databse with the bundle files existing in the repository
+	 * directory.
+	 */
+	private void populateBundleDatabase() {
+		File folder = repositoryDirectory.toFile();
+		File[] listOfFiles = folder.listFiles();
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				updateRegistry(repositoryDirectory.toString() + "\\" + listOfFiles[i].getName());
+			}
+		}
 	}
 }
