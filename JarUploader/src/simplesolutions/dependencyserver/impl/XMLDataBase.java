@@ -34,7 +34,7 @@ public final class XMLDataBase {
 	}
 
 	/** The Constant FILE_NAME. */
-	private static final String FILE_NAME = "contents.xml";
+	public static final String FILE_NAME = "contents.xml";
 
 	/** The file in. */
 	private static FileInputStream fileIn = null;
@@ -90,8 +90,11 @@ public final class XMLDataBase {
 		try {
 			if (!openFile())
 				return false;
+			fileOut.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\t<bundles>\r\n"
+					.getBytes());
 			for (Map.Entry<String, JarBundleFile> o : registry.entrySet())
-				fileOut.write((o.getValue().toXML() + "\n").getBytes());
+				fileOut.write(("\t" + o.getValue().toXML() + "\r\n").getBytes());
+			fileOut.write("\t</bundles>\r\n".getBytes());
 			fileOut.flush();
 			if (!closeFile())
 				return false;

@@ -68,10 +68,24 @@ public final class HttpServer extends Thread {
 	 * @return
 	 */
 	public void getPackageFile(String url, DataOutputStream out) {
+		/*
+		 * Is the client asking the content.xml ?
+		 */
+		if (url.equals("/repo/contents.xml")) {
+			getContentsXML(out);
+			return;
+		}
 		try {
+			/*
+			 * Remove the initial / from the url to end up only with the package
+			 * name.
+			 */
 			String[] packageNameManifest = url.split("/");
 			String packagePath = Main.getJarRegistry().getJarProvidingPackage(
 					packageNameManifest[1]);
+			/*
+			 * Package found?
+			 */
 			if (packagePath == null)
 				out.writeBytes(responseHeader);
 			else {
@@ -92,6 +106,32 @@ public final class HttpServer extends Thread {
 				}
 				istream.close();
 			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void getContentsXML(DataOutputStream out) {
+		try {
+			String fileName = XMLDataBase.FILE_NAME;
+			/*
+			 * Let us send the file to the client.
+			 */
+			out.writeBytes("HTTP/1.1 200 OK\r\nExpires:	-1\r\nConnection:	close\r\n\r\n");
+			InputStream istream = new FileInputStream(fileName);
+			final byte[] buffer = new byte[1024 * 8];
+			while (true) {
+				final int len = istream.read(buffer);
+				if (len <= 0) {
+					break;
+				}
+				out.write(buffer, 0, len);
+			}
+			istream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

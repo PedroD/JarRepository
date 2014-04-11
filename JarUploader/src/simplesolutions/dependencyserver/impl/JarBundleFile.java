@@ -320,24 +320,24 @@ public final class JarBundleFile implements XMLParseable {
 	@Override
 	public String toXML() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<jar name=\"" + this.name + "\">\n");
+		sb.append("<jar name=\"" + this.name + "\">\r\n");
 		/*
 		 * Print exported packages
 		 */
-		sb.append("\t<exported>\n");
+		sb.append("\t<exported>\r\n");
 		for (Map.Entry<String, PackageVersionRange> entry : exportedPackages
 				.entrySet())
 			sb.append("\t\t<package name=\"" + entry.getKey() + "\" version=\""
-					+ entry.getValue() + "\">\n");
-		sb.append("\t</exported>\n");
+					+ entry.getValue() + "\" />\r\n");
+		sb.append("\t</exported>\r\n");
 		/*
 		 * Print imported packages
 		 */
-		sb.append("\t<imported>\n");
+		sb.append("\t<imported>\r\n");
 		for (Map.Entry<String, PackageVersionRange> entry : importedPackages
 				.entrySet())
 			sb.append("\t\t<package name=\"" + entry.getKey() + "\" version=\""
-					+ entry.getValue() + "\">\n");
+					+ entry.getValue() + "\" />\r\n");
 		sb.append("\t</imported>\n");
 		sb.append("</jar>");
 		return sb.toString();
