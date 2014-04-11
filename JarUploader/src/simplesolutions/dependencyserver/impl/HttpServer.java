@@ -7,7 +7,7 @@ import simplesolutions.util.HttpPortListener;
  * the installed pages. Pages are installed as OSGi bundles (plug-ins), and this
  * HTTP Server maintains a list of installed pages.
  * 
- * @author NeMewSys
+ * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  * 
  */
 public final class HttpServer extends Thread {

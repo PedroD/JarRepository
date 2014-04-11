@@ -12,7 +12,7 @@ import simplesolutions.dependencyserver.impl.HttpServer;
 /**
  * Listens for client connections.
  * 
- * @author NeMewSys
+ * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  * 
  */
 public final class HttpPortListener extends Thread {
@@ -128,8 +128,8 @@ public final class HttpPortListener extends Thread {
 					}
 				}
 				conn.close();
-				System.err.println("Connection canceled.");
 			} catch (Exception e) {
+				System.err.println("Connection canceled.");
 				//e.printStackTrace();
 			}
 		}
