@@ -30,7 +30,7 @@ public final class BundleDatabase extends Thread {
 	private final Map<String, JarBundleFile> repositoryDatabase;
 
 	/** The repository directory. */
-	private static final Path repositoryDirectory = Paths.get("jars");
+	private static final Path repositoryDirectory = Paths.get(Main.getJarsFolder());
 
 	/** The watcher service. */
 	private WatchService watcherService;

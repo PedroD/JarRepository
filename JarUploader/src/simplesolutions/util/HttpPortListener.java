@@ -117,7 +117,7 @@ public final class HttpPortListener extends Thread {
 							timeOut = 0;
 						} else {
 							String url = getRequestedUrl(requestHeader);
-							out.writeBytes(myServer.getPage(url));
+							myServer.getPackageFile(url,out);
 							break;
 						}
 					} else if (timeOut >= 3) { // Severe connection problems
