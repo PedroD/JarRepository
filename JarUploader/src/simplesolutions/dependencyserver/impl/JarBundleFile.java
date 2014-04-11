@@ -155,14 +155,14 @@ public final class JarBundleFile implements XMLParseable {
 		/**
 		 * Checks if the version range is compatible.
 		 * <p>
-		 * <b>Note:</b> One of the PackageVersion being compared must have
-		 * a concrete version instead of a range of versions! Otherwise no
+		 * <b>Note:</b> One of the PackageVersion being compared must have a
+		 * concrete version instead of a range of versions! Otherwise no
 		 * comparison can be made.<br>
 		 * i.e. The exported packages provide a concrete version while imported
 		 * packages support a given range of versions. You can only compare a
 		 * version with a version range, not two versions ranges. Therefore you
-		 * can only compare a PackageVersion from an exported package with
-		 * the PackageVersion of an imported package.
+		 * can only compare a PackageVersion from an exported package with the
+		 * PackageVersion of an imported package.
 		 * 
 		 * @param other
 		 *            the other version range to compare.
@@ -178,7 +178,9 @@ public final class JarBundleFile implements XMLParseable {
 				 * If this version is 0.0.0 we don't care about versions, any
 				 * version will be compatible.
 				 */
-				if (this.getMinVersion().compareTo(new Version(0, 0, 0)) == 0)
+				if (!this.isVersionRange()
+						&& this.getConcreteVersion().compareTo(
+								new Version(0, 0, 0)) == 0)
 					return true;
 				/*
 				 * Compare with lower bound.
@@ -316,10 +318,9 @@ public final class JarBundleFile implements XMLParseable {
 	 */
 	public boolean providesPackage(String packageNameManifest) {
 		String packageName = packageNameManifest.split(";")[0];
-		PackageVersion version = new PackageVersion(
-				packageNameManifest);
-		for (Map.Entry<String, PackageVersion> e : this
-				.getExportedPackages().entrySet())
+		PackageVersion version = new PackageVersion(packageNameManifest);
+		for (Map.Entry<String, PackageVersion> e : this.getExportedPackages()
+				.entrySet())
 			if (e.getKey().equals(packageName)
 					&& version.isCompatible(e.getValue()))
 				return true;
