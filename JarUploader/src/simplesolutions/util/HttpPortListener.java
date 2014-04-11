@@ -132,7 +132,7 @@ public final class HttpPortListener extends Thread {
 				conn.close();
 			} catch (Exception e) {
 				System.err.println("Connection canceled.");
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 
