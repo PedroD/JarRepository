@@ -71,7 +71,7 @@ public final class HttpServer extends Thread {
 		/*
 		 * Is the client asking the content.xml ?
 		 */
-		if (url.equals("/repo/contents.xml")) {
+		if (url.equals("/repo/contents.xml") || url.equals("/")) {
 			getContentsXML(out);
 			return;
 		}
