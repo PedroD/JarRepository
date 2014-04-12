@@ -1,6 +1,7 @@
 package simplesolutions.dependencyserver.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
@@ -52,7 +53,8 @@ public final class JarLoader {
 			for (Enumeration<? extends ZipEntry> e = zip.entries(); e
 					.hasMoreElements();) {
 				ZipEntry entry = (ZipEntry) e.nextElement();
-				if (entry.toString().equals("META-INF/MANIFEST.MF")) {
+				if (entry.toString().equals(
+						"META-INF" + File.separator + "MANIFEST.MF")) {
 					BufferedReader bf = new BufferedReader(
 							new InputStreamReader(zip.getInputStream(entry)));
 					StringBuilder out = new StringBuilder();

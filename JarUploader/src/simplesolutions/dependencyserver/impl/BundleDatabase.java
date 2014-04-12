@@ -27,10 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BundleDatabase extends Thread {
 
 	/** The repository database. */
-	private final Map<String, JarBundleFile> repositoryDatabase;
+	private volatile Map<String, JarBundleFile> repositoryDatabase;
 
 	/** The repository directory. */
-	private static final Path repositoryDirectory = Paths.get(Main.getJarsFolder());
+	private static final Path repositoryDirectory = Paths.get(Main
+			.getJarsFolderName());
 
 	/** The watcher service. */
 	private WatchService watcherService;
@@ -48,8 +49,8 @@ public final class BundleDatabase extends Thread {
 		 * Create directory if it doesn't exist.
 		 */
 		try {
-			if (!repositoryDirectory.toFile().exists())
-				repositoryDirectory.toFile().mkdir();
+			if (!createFolder(Main.getJarsFolderName()))
+				throw new IOException("Cannot create the repository folder.");
 			watcherService = FileSystems.getDefault().newWatchService();
 			watchKey = repositoryDirectory.register(watcherService,
 					StandardWatchEventKinds.ENTRY_CREATE,
@@ -59,6 +60,21 @@ public final class BundleDatabase extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Creates a folder.
+	 * 
+	 * @param folderName
+	 *            the folder name
+	 * @return true, if successful
+	 */
+	private static boolean createFolder(String folderName) {
+		final Path repositoryDirectory = Paths.get(folderName);
+		if (!repositoryDirectory.toFile().exists()) {
+			repositoryDirectory.toFile().mkdir();
+		}
+		return repositoryDirectory.toFile().exists();
 	}
 
 	/*
@@ -151,7 +167,7 @@ public final class BundleDatabase extends Thread {
 	 *            the file
 	 * @return true, if is zip file
 	 */
-	public boolean isZipFile(File file) {
+	private boolean isZipFile(File file) {
 		if (file.isDirectory()) {
 			return false;
 		}
@@ -207,7 +223,8 @@ public final class BundleDatabase extends Thread {
 
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-				updateRegistry(repositoryDirectory.toString() + "\\" + listOfFiles[i].getName());
+				updateRegistry(repositoryDirectory.toString() + File.separator
+						+ listOfFiles[i].getName());
 			}
 		}
 	}

@@ -89,7 +89,7 @@ public final class HttpServer extends Thread {
 			if (packagePath == null)
 				out.writeBytes(responseHeader);
 			else {
-				String fileName = packagePath.split(Main.getJarsFolder())[1];
+				String fileName = packagePath.split(Main.getJarsFolderName())[1];
 				/*
 				 * Let us send the file to the client.
 				 */

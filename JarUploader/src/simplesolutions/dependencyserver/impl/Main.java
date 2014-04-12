@@ -38,7 +38,7 @@ public final class Main {
 		return jarRegistry;
 	}
 
-	public static String getJarsFolder() {
+	public static String getJarsFolderName() {
 		return JARS_PATH;
 	}
 
