@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="iCanGraph Target File" sequenceNumber="5">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
+<unit id="codebase" version="1.0.0"/>
+<unit id="dependencies" version="1.0.0"/>
+<unit id="SerialComm" version="1.0.0"/>
+<unit id="rxtx" version="2.1.7"/>
+<unit id="lumina.extensions.properties.declarations.basic" version="0.0.1"/>
+<unit id="lumina.extensions.properties.types.basic" version="0.0.1"/>
+<unit id="lumina.extensions.properties.validators.basic" version="0.0.1"/>
+<unit id="lumina.extensions.transport.knx" version="0.0.1"/>
+<unit id="lumina.extensions.transport.rs232" version="0.0.1"/>
+<unit id="lumina.base.properties" version="0.0.1"/>
+<unit id="lumina.base.transport" version="0.0.1"/>
+<unit id="lumina.application" version="1.0.0"/>
+<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/repositories/p2-releases/.meta/p2"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.platform.sdk" version="4.3.1.M20130911-1000"/>
+<unit id="org.junit" version="4.11.0.v201303080030"/>
+<unit id="org.eclipse.emf.ecore" version="2.9.1.v20130827-0309"/>
+<unit id="org.eclipse.emf.common" version="2.9.1.v20130827-0309"/>
+<unit id="org.eclipse.emf.ecore.xmi" version="2.9.1.v20130827-0309"/>
+<unit id="org.eclipse.emf.ecore.change" version="2.9.0.v20130827-0309"/>
+<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
+<unit id="org.apache.xmlrpc" version="3.0.0.v20100427-1100"/>
+<unit id="org.eclipse.draw2d" version="3.9.0.201308190730"/>
+<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/groups/p2-proxies/"/>
+</location>
+</locations>
+</target>

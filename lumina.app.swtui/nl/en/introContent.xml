@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+	<page id="homePageId" content="hello.xhtml"/>
+	<page id="standbyPageId" content="help.xhtml"/>    
+    <page id="whatis" content="whatis.xhtml"/>
+    <page id="features" content="features.xhtml"/>
+    <page id="faq" content="faq.xhtml"/>
+    <!-- page id="tutorials" content="tutorials.xhtml"/>
+    <page id="learnPerform" content="learnPerform.xhtml"/ -->    
+</introContent>
+<!-- introContent>
+	<page id="homePageId" content="hello.xhtml"/>
+	<page id="standbyPageId" content="help.xhtml"/>
+  	<page alt-style="static/css/root_swt.properties" style="static/css/root.css" id="root" style-id="page">
+    <title style-id="intro-header">DEFAULT</title>
+    <group id="links-background">
+      <group id="page-links">
+        <link label="Overview" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
+          <text>Find out what Lumina is all about</text>
+        </link>
+        <link label="Tutorials" url="http://org.eclipse.ui.intro/showPage?id=tutorials" id="tutorials" style-id="left">
+          <text>Let us guide you through Lumina end-to-end tutorials</text>
+        </link>
+        <link label="Samples" url="http://org.eclipse.ui.intro/showPage?id=samples" id="samples" style-id="right">
+          <text>Explore Lumina development through sample tasks</text>
+        </link>
+      </group>
+    </group>
+    </page>
+</introContent--> 

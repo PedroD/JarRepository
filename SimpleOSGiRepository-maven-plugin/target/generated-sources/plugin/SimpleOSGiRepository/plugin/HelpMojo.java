@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Display help information on SimpleOSGiRepository-maven-plugin.<br/>
- * Call <code>mvn SimpleOSGiRepository-maven-plugin:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
+ * Call <code>mvn osgirepo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.
  * @author
  * @version
  */
@@ -59,7 +59,7 @@ public class HelpMojo
     private int indentSize;
 
     // groupId/artifactId/plugin-help.xml
-    private static final String PLUGIN_HELP_PATH = "/META-INF/maven/SimpleOSGiRepository.plugin/SimpleOSGiRepository-maven-plugin/plugin-help.xml";
+    private static final String PLUGIN_HELP_PATH = "/META-INF/maven/simplesolutions/SimpleOSGiRepository-maven-plugin/plugin-help.xml";
 
     private Document build()
         throws MojoExecutionException

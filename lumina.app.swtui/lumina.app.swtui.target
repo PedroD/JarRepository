@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="lumina.app.swtui Target File" sequenceNumber="10">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="codebase" version="1.0.0"/>
+<unit id="rxtx" version="2.1.7"/>
+<unit id="lumina.api" version="0.0.0"/>
+<unit id="lumina.network" version="0.0.0"/>
+<unit id="lumina.kernel" version="0.0.0"/>
+<unit id="lumina.license" version="0.0.0"/>
+<unit id="lumina.db" version="0.0.0"/>
+<unit id="lumina.deps" version="1.0.2"/>
+<unit id="lumina.extensions.base" version="0.0.0"/>
+<unit id="lumina.extensions.drivers.rs232rxtx" version="0.0.0"/>
+<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/repositories/p2-releases/.meta/p2"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.sdk" version="0.0.0"/>
+<unit id="org.junit" version="0.0.0"/>
+<unit id="org.eclipse.emf.ecore" version="0.0.0"/>
+<unit id="org.eclipse.emf.common" version="0.0.0"/>
+<unit id="org.eclipse.emf.ecore.xmi" version="0.0.0"/>
+<unit id="org.eclipse.emf.ecore.change" version="0.0.0"/>
+<unit id="org.hamcrest.core" version="0.0.0"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
+<unit id="org.apache.xmlrpc" version="0.0.0"/>
+<unit id="org.eclipse.draw2d" version="0.0.0"/>
+<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/groups/p2-proxies"/>
+</location>
+</locations>
+</target>
