@@ -1,13 +1,14 @@
 package SimpleOSGiRepository.plugin;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * The Class ManifestLoader used to load the manifest.mf.
@@ -19,74 +20,64 @@ public final class ManifestLoader {
 	/**
 	 * Gets the exported packages.
 	 * 
-	 * @param fileName
-	 *            the file name
 	 * @return the exported packages
+	 * @throws MojoExecutionException
 	 */
-	public static String[] getExportedPackages(String fileName) {
-		return parseField(fileName, "Export-Package");
+	public static String[] getExportedPackages() throws MojoExecutionException {
+		return parseField("Export-Package");
 	}
 
 	/**
 	 * Gets the imported packages.
 	 * 
-	 * @param fileName
-	 *            the file name
 	 * @return the imported packages
+	 * @throws MojoExecutionException
 	 */
-	public static String[] getImportedPackages(String fileName) {
-		return parseField(fileName, "Import-Package");
+	public static String[] getImportedPackages() throws MojoExecutionException {
+		return parseField("Import-Package");
 	}
 
 	/**
 	 * Gets the manifest.
 	 * 
-	 * @param fileName
-	 *            the file name
 	 * @return the manifest
+	 * @throws MojoExecutionException
 	 */
-	private static String getManifest(String fileName) {
-		ZipFile zip = null;
+	private static String getManifest() throws MojoExecutionException {
+		final String manifestPath = "." + File.separator + "META-INF"
+				+ File.separator + "MANIFEST.MF";
+		File manifestFile = new File(manifestPath);
+		if (!manifestFile.exists())
+			throw new MojoExecutionException(
+					"OSGi Manifest file could not be found!");
 		try {
-			zip = new ZipFile(fileName);
-			for (Enumeration<? extends ZipEntry> e = zip.entries(); e
-					.hasMoreElements();) {
-				ZipEntry entry = (ZipEntry) e.nextElement();
-				if (entry.toString().equals("META-INF/MANIFEST.MF")
-						|| entry.toString().equals("META-INF\\MANIFEST.MF")) {
-					BufferedReader bf = new BufferedReader(
-							new InputStreamReader(zip.getInputStream(entry)));
-					StringBuilder out = new StringBuilder();
-					String line;
-					while ((line = bf.readLine()) != null) {
-						out.append(line + "\n");
-					}
-					bf.close();
-					zip.close();
-					return out.toString();
-				}
+			BufferedReader bf = new BufferedReader(new InputStreamReader(
+					new FileInputStream(manifestFile)));
+			StringBuilder out = new StringBuilder();
+			String line;
+			while ((line = bf.readLine()) != null) {
+				out.append(line + "\n");
 			}
+			bf.close();
+			return out.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new MojoExecutionException(
+					"Error reading manifest.mf! Not enough permissions? See server logs for more info.");
 		}
-		return null;
-	}
-
-	public static boolean isValidJarFileWithManifest(String fileName) {
-		return getManifest(fileName) != null;
 	}
 
 	/**
 	 * Parses a given field from the jar's manifest.mf file.
 	 * 
-	 * @param fileName
-	 *            the jar file path.
 	 * @param fieldName
 	 *            the desired manifest field name.
 	 * @return an array with the entries in that field.
+	 * @throws MojoExecutionException
 	 */
-	private static String[] parseField(String fileName, String fieldName) {
-		String manifest = getManifest(fileName);
+	private static String[] parseField(String fieldName)
+			throws MojoExecutionException {
+		String manifest = getManifest();
 		if (manifest == null)
 			return null;
 
