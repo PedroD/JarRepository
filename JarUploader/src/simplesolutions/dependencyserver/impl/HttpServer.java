@@ -1,6 +1,7 @@
 package simplesolutions.dependencyserver.impl;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -89,7 +90,8 @@ public final class HttpServer extends Thread {
 			if (packagePath == null)
 				out.writeBytes(responseHeader);
 			else {
-				String fileName = packagePath.split(Main.getJarsFolderName())[1];
+				int lengthToCut = (Main.getJarsFolderName() + File.separator).length();
+				String fileName = packagePath.substring(lengthToCut);
 				/*
 				 * Let us send the file to the client.
 				 */

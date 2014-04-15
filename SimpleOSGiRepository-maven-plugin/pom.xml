@@ -53,6 +53,9 @@
 			<plugin>
 				<groupId>simplesolutions</groupId>
 				<artifactId>SimpleOSGiRepository-maven-plugin</artifactId>
+				<configuration>
+				    <serverURL>localhost</serverURL>
+				</configuration>
 				<version>0.0.1</version>
 			</plugin>
 			<plugin>

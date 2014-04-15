@@ -25,7 +25,7 @@ public final class Main {
 		File file = new File(".");
 		System.out.println("HINT: Put your bundles in "
 				+ file.getAbsolutePath() + " inside the " + JARS_PATH
-				+ "/ folder.");
+				+ File.separator + " folder.");
 		new HttpServer(80).start();
 	}
 
