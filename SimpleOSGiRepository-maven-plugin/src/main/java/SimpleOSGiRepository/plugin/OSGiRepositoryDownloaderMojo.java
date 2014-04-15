@@ -2,48 +2,33 @@ package SimpleOSGiRepository.plugin;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IWorkingCopy;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The Class used to download the manifest.mf dependencies from the repository.
  * 
  * @author Pedro Domingues (pedro.domingues@ist.utl.pt)
  */
-@Mojo(name = "download")
+@Mojo(name = "download", defaultPhase = LifecyclePhase.VALIDATE)
 public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 
 	/**
 	 * The path to display.
 	 */
-	@Parameter(property = "download.path")
+	@Parameter
 	private String path;
 
 	/**
 	 * The server URL.
 	 */
-	@Parameter(property = "download.serverurl")
+	@Parameter
 	private String serverURL;
-
-	/**
-	 * The server port.
-	 */
-	@Parameter(property = "download.serverport")
-	private int serverPort;
 
 	/*
 	 * (non-Javadoc)
@@ -60,14 +45,26 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 		/*
 		 * Validate server info.
 		 */
-		if (serverPort == 0 || serverURL == null)
+		if (serverURL == null)
 			throw new MojoExecutionException(
-					"You must configure the server URL and port in the POM file!");
+					"You must configure the server URL in the POM file!");
+		/*
+		 * Add the final slash and the "http://" if missing.
+		 */
+		if (serverURL.charAt(serverURL.length() - 1) != '/')
+			serverURL += '/';
+		if (!serverURL.contains("http://"))
+			serverURL = "http://" + serverURL;
 		/*
 		 * Set default path.
 		 */
 		if (path == null || path.equals(""))
 			path = "." + File.separator + ".settings" + File.separator + "libs";
+		/*
+		 * Add the final separator.
+		 */
+		if (path.charAt(path.length() - 1) != File.separatorChar)
+			path += File.separatorChar;
 		/*
 		 * Create the folder to download the dependencies to.
 		 */
@@ -76,25 +73,34 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 					"Cannot create folder for putting the downloaded libraries. Please create the folder manually: "
 							+ File.separator + path);
 		}
+		getLog().info(" ");
 		getLog().info("Downloaded bundles will be stored in " + path);
+		getLog().info(" ");
 		/*
 		 * Cycle through dependencies and download them.
 		 */
 		RepositoryServerConnection server = new RepositoryServerConnection(
-				serverURL, serverPort);
-		for (String dependency : ManifestLoader.getExportedPackages()) {
+				serverURL);
+		ClassPathFile classPathFile = new ClassPathFile();
+		for (String dependency : ManifestLoader.getImportedPackages()) {
+			getLog().info("Resolving: " + dependency);
 			String bundleName = server.getProvidingBundleFileName(dependency);
 			if (bundleName == null)
 				throw new MojoFailureException(
 						"There's no bundle that can solve this dependency: "
 								+ dependency);
-			if (!new File(path + File.separator + bundleName).exists()) {
-				server.downloadBundle(bundleName, path);
-				addClasspathEntry(bundleName);
-				getLog().info("Downloaded " + bundleName + ".");
+			if (!new File(path + bundleName).exists()) {
+				server.downloadBundle(path, bundleName, dependency);
+				getLog().info(" * Downloaded " + bundleName + ".");
+			} else {
+				getLog().info(
+						" * Bundle " + bundleName
+								+ " previously downloaded (delete it from "
+								+ path + " if you want to download it again).");
 			}
-
+			classPathFile.addLibraryEntry(path, bundleName);
 		}
+		classPathFile.save();
 		getLog().info(
 				"==========================================================");
 		getLog().info(

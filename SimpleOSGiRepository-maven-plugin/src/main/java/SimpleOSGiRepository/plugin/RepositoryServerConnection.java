@@ -1,5 +1,15 @@
 package SimpleOSGiRepository.plugin;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+
+import org.apache.maven.plugin.MojoExecutionException;
+
 /**
  * Class that communicates with the server.
  * 
@@ -8,23 +18,17 @@ package SimpleOSGiRepository.plugin;
  */
 public final class RepositoryServerConnection {
 
-	/** The server's port. */
-	private int port;
-
-	/** The server's url. */
-	private String url;
+	/** The server's serverURL. */
+	private String serverURL;
 
 	/**
 	 * Instantiates a new repository server connection.
 	 * 
 	 * @param serverURL
-	 *            the server url
-	 * @param serverPort
-	 *            the server port
+	 *            the server serverURL
 	 */
-	public RepositoryServerConnection(String serverURL, int serverPort) {
-		this.url = serverURL;
-		this.port = serverPort;
+	public RepositoryServerConnection(String serverURL) {
+		this.serverURL = serverURL;
 	}
 
 	/**
@@ -35,23 +39,65 @@ public final class RepositoryServerConnection {
 	 *            the package manifest description
 	 * @return the providing bundle file name or null if no bundle provides the
 	 *         package.
+	 * @throws MojoExecutionException
 	 */
-	public String getProvidingBundleFileName(String packageManifestDescription) {
-		// TODO:
-		// https://stackoverflow.com/questions/10995378/httpurlconnection-downloaded-file-name
-		return null;
+	public String getProvidingBundleFileName(String packageManifestDescription)
+			throws MojoExecutionException {
+		try {
+			URL url = new URL(serverURL + packageManifestDescription);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setAllowUserInteraction(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.connect();
+			String fileName;
+			String raw = conn.getHeaderField("Content-Disposition");
+			// raw = "attachment; filename=abc.jpg"
+			if (raw != null && raw.indexOf("=") != -1) {
+				fileName = raw.split("=")[1].replace("\"", "");
+			} else {
+				throw new MojoExecutionException(
+						"There's no bundle that resolves this dependency.");
+			}
+			conn.disconnect();
+			return fileName;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			throw new MojoExecutionException(
+					"Server returned a corrupted response! No file name indicated.");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new MojoExecutionException(
+					"Server returned a corrupted response! No file name indicated.");
+		}
 	}
 
 	/**
 	 * Download bundle from the repository server.
 	 * 
+	 * @param path
+	 *            the path to store the downloaded bundle.
 	 * @param bundleName
 	 *            the bundle name
-	 * @param downloadPath
-	 *            the path to save the downloaded bundle.
+	 * @param packageManifestDescription
+	 *            the package manifest description
+	 * @throws MojoExecutionException
+	 *             the mojo execution exception
 	 */
-	public void downloadBundle(String bundleName, String downloadPath) {
-		// TODO:
-		// https://stackoverflow.com/questions/921262/how-to-download-and-save-a-file-from-internet-using-java
+	public void downloadBundle(String path, String bundleName,
+			String packageManifestDescription) throws MojoExecutionException {
+		try {
+			URL website = new URL(serverURL + packageManifestDescription);
+			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+			FileOutputStream fos = new FileOutputStream(path + bundleName);
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+			fos.flush();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new MojoExecutionException(
+					"Server returned a corrupted response during download.");
+		}
 	}
 }

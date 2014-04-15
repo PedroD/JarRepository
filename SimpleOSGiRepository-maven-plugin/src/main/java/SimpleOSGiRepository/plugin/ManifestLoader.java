@@ -18,16 +18,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 public final class ManifestLoader {
 
 	/**
-	 * Gets the exported packages.
-	 * 
-	 * @return the exported packages
-	 * @throws MojoExecutionException
-	 */
-	public static String[] getExportedPackages() throws MojoExecutionException {
-		return parseField("Export-Package");
-	}
-
-	/**
 	 * Gets the imported packages.
 	 * 
 	 * @return the imported packages
@@ -98,7 +88,7 @@ public final class ManifestLoader {
 		 * trash.
 		 */
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; tmp2[i].charAt(0) == ' ' && i < tmp2.length; i++) {
+		for (int i = 0; i < tmp2.length && tmp2[i].charAt(0) == ' '; i++) {
 			sb.append(tmp2[i]);
 		}
 

@@ -107,7 +107,10 @@ public final class JarLoader {
 		 * trash.
 		 */
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; tmp2[i].charAt(0) == ' ' && i < tmp2.length; i++) {
+		for (int i = 0; i < tmp2.length; i++) {
+			if (tmp2[i] == null || tmp2[i].length() == 0
+					|| tmp2[i].charAt(0) != ' ')
+				break;
 			sb.append(tmp2[i]);
 		}
 
