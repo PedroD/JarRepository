@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IWorkingCopy;
 import org.eclipse.jdt.core.JavaCore;
 
 /**
@@ -113,49 +114,5 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 			repositoryDirectory.toFile().mkdirs();
 		}
 		return repositoryDirectory.toFile().exists();
-	}
-
-	/**
-	 * Adds a new classpath entry to this project's .classpath file.
-	 * 
-	 * @param bundlePath
-	 *            the bundle path
-	 * @throws MojoExecutionException
-	 */
-	private static void addClasspathEntry(String bundlePath)
-			throws MojoExecutionException {
-		/*
-		 * Resolve current project's name.
-		 */
-		String projectName = null;
-		// TODO: READ IT FROM .PROJECT FILE
-		/*
-		 * Add the new library to the classpath.
-		 */
-		IProject project = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(projectName);
-		try {
-			IJavaProject javaProject = (IJavaProject) project
-					.getNature(JavaCore.NATURE_ID);
-			IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
-			List<IClasspathEntry> list = new LinkedList<IClasspathEntry>(
-					java.util.Arrays.asList(rawClasspath));
-			boolean isAlreadyAdded = false;
-			for (IClasspathEntry cpe : rawClasspath) {
-				isAlreadyAdded = cpe.getPath().toOSString().equals(bundlePath);
-				if (isAlreadyAdded)
-					break;
-			}
-			if (!isAlreadyAdded) {
-				IClasspathEntry jarEntry = JavaCore.newLibraryEntry(new Path(
-						bundlePath), null, null);
-				list.add(jarEntry);
-			}
-			IClasspathEntry[] newClasspath = (IClasspathEntry[]) list
-					.toArray(new IClasspathEntry[0]);
-			javaProject.setRawClasspath(newClasspath, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 	}
 }
