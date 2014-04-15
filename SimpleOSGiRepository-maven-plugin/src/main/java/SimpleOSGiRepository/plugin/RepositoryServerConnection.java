@@ -63,13 +63,13 @@ public final class RepositoryServerConnection {
 			conn.disconnect();
 			return fileName;
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new MojoExecutionException(
 					"Server returned a corrupted response! No file name indicated.");
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Server returned a corrupted response! No file name indicated.");
+					"Failed to connect to the server!");
 		}
 	}
 

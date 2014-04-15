@@ -435,6 +435,13 @@
 	<imported>
 	</imported>
 </jar>
+	<jar name="jars\junit-3.8.2.jar">
+	<exported>
+		<package name="junit.framework" version="3.8.2" />
+	</exported>
+	<imported>
+	</imported>
+</jar>
 	<jar name="jars\org.eclipse.equinox.p2.metadata.repository_1.1.0.v20100513.jar">
 	<exported>
 		<package name="org.eclipse.equinox.internal.p2.metadata.repository.io" version="0.0.0" />
