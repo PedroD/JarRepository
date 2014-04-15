@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +27,11 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jdt.internal.core.util.Util;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Loads and parses .classfiles.
@@ -175,14 +184,14 @@ public final class ClassfileLoader {
 	}
 
 	/**
-	 * Reads and decode an XML classpath string
+	 * Reads and decodes an XML classpath string
 	 * 
 	 * @param xmlClasspath
 	 * @param unknownElements
 	 * @return
 	 */
 	public IClasspathEntry[] decodeClasspath(String xmlClasspath) {
-		ArrayList paths = new ArrayList();
+		ArrayList<IClasspathEntry> paths = new ArrayList<IClasspathEntry>();
 		IClasspathEntry defaultOutput = null;
 		StringReader reader = new StringReader(xmlClasspath);
 		Element cpElement;
@@ -192,15 +201,15 @@ public final class ClassfileLoader {
 			cpElement = parser.parse(new InputSource(reader))
 					.getDocumentElement();
 		} catch (SAXException e) {
-			throw new IOException(Messages.file_badFormat);
+			throw new IOException("The .classpath file is corrupt!");
 		} catch (ParserConfigurationException e) {
-			throw new IOException(Messages.file_badFormat);
+			throw new IOException("The .classpath file is corrupt!");
 		} finally {
 			reader.close();
 		}
 
 		if (!cpElement.getNodeName().equalsIgnoreCase("classpath")) { //$NON-NLS-1$
-			throw new IOException(Messages.file_badFormat);
+			throw new IOException("The .classpath file is corrupt!");
 		}
 		NodeList list = cpElement.getElementsByTagName("classpathentry"); //$NON-NLS-1$
 		int length = list.getLength();
@@ -209,7 +218,7 @@ public final class ClassfileLoader {
 			Node node = list.item(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				IClasspathEntry entry = ClasspathEntry.elementDecode(
-						(Element) node, this, unknownElements);
+						(Element) node, this, null);
 				if (entry != null) {
 					if (entry.getContentKind() == ClasspathEntry.K_OUTPUT) {
 						defaultOutput = entry; // separate output
