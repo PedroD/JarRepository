@@ -13,7 +13,7 @@ public final class ErrorMessageFormatter {
 	 * @return the string
 	 */
 	public static String format(String m) {
-		return "\n[ERROR] Simple OSGi Repository: " + m;
+		return "\n\n Simple OSGi Repository: " + m + "\n\n";
 	}
 
 }

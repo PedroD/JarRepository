@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import simple.plugin.filemanipulators.ManifestLoader;
+import simple.plugin.filemanipulators.TargetFileCreator;
 import simple.plugin.utils.ErrorMessageFormatter;
 import simple.plugin.utils.RepositoryServerConnection;
 
@@ -105,6 +106,10 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 								+ path + " if you want to download it again).");
 			}
 		}
+		/*
+		 * Create a target file.
+		 */
+		TargetFileCreator.create(path);
 		getLog().info(
 				"==========================================================");
 		getLog().info(
