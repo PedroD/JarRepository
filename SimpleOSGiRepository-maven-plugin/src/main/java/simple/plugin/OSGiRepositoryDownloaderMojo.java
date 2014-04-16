@@ -10,6 +10,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import simple.plugin.filemanipulators.ClassPathFile;
 import simple.plugin.filemanipulators.ManifestLoader;
 import simple.plugin.filemanipulators.TargetFileCreator;
 import simple.plugin.utils.ErrorMessageFormatter;
@@ -88,6 +89,7 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 		 */
 		RepositoryServerConnection server = new RepositoryServerConnection(
 				serverURL);
+		ClassPathFile classPath = new ClassPathFile();
 		for (String dependency : ManifestLoader.getImportedPackages()) {
 			getLog().info("Resolving: " + dependency);
 			String bundleName = server.getProvidingBundleFileName(dependency);
@@ -105,7 +107,9 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 								+ " previously downloaded (delete it from "
 								+ path + " if you want to download it again).");
 			}
+			classPath.addLibraryEntry(path, bundleName);
 		}
+		classPath.save();
 		/*
 		 * Create a target file.
 		 */

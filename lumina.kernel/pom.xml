@@ -22,8 +22,8 @@
 	</distributionManagement>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
 		<bundle.symbolicName>lumina.kernel</bundle.symbolicName>
 		<bundle.namespace>lumina.kernel</bundle.namespace>
 	</properties>
