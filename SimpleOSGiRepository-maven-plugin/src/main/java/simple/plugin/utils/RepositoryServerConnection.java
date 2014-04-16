@@ -1,4 +1,4 @@
-package SimpleOSGiRepository.plugin;
+package simple.plugin.utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,18 +58,21 @@ public final class RepositoryServerConnection {
 				fileName = raw.split("=")[1].replace("\"", "");
 			} else {
 				throw new MojoExecutionException(
-						"There's no bundle that resolves this dependency.");
+						ErrorMessageFormatter
+								.format("There's no bundle that resolves this dependency."));
 			}
 			conn.disconnect();
 			return fileName;
 		} catch (MalformedURLException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 			throw new MojoExecutionException(
-					"Server returned a corrupted response! No file name indicated.");
+					ErrorMessageFormatter
+							.format("Server returned a corrupted response! No file name indicated."));
 		} catch (IOException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 			throw new MojoExecutionException(
-					"Failed to connect to the server!");
+					ErrorMessageFormatter
+							.format("Failed to connect to the server!"));
 		}
 	}
 
@@ -97,7 +100,8 @@ public final class RepositoryServerConnection {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Server returned a corrupted response during download.");
+					ErrorMessageFormatter
+							.format("Server returned a corrupted response during download."));
 		}
 	}
 }

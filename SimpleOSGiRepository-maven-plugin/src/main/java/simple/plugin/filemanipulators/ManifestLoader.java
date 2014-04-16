@@ -1,4 +1,4 @@
-package SimpleOSGiRepository.plugin;
+package simple.plugin.filemanipulators;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
+
+import simple.plugin.utils.ErrorMessageFormatter;
 
 /**
  * The Class ManifestLoader used to load the manifest.mf.
@@ -39,7 +41,8 @@ public final class ManifestLoader {
 		File manifestFile = new File(manifestPath);
 		if (!manifestFile.exists())
 			throw new MojoExecutionException(
-					"OSGi Manifest file could not be found!");
+					ErrorMessageFormatter
+							.format("OSGi Manifest file could not be found!"));
 		try {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(
 					new FileInputStream(manifestFile)));
@@ -53,7 +56,8 @@ public final class ManifestLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Error reading manifest.mf! Not enough permissions? See server logs for more info.");
+					ErrorMessageFormatter
+							.format("Error reading manifest.mf! Not enough permissions? See server logs for more info."));
 		}
 	}
 

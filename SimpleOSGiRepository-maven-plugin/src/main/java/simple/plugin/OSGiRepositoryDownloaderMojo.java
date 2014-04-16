@@ -1,4 +1,4 @@
-package SimpleOSGiRepository.plugin;
+package simple.plugin;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -9,6 +9,10 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+
+import simple.plugin.filemanipulators.ManifestLoader;
+import simple.plugin.utils.ErrorMessageFormatter;
+import simple.plugin.utils.RepositoryServerConnection;
 
 /**
  * The Class used to download the manifest.mf dependencies from the repository.
@@ -47,7 +51,8 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 		 */
 		if (serverURL == null)
 			throw new MojoExecutionException(
-					"You must configure the server URL in the POM file!");
+					ErrorMessageFormatter
+							.format("You must configure the server URL in the POM file!"));
 		/*
 		 * Add the final slash and the "http://" if missing.
 		 */
@@ -70,8 +75,9 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 		 */
 		if (!createFolder(path)) {
 			throw new MojoExecutionException(
-					"Cannot create folder for putting the downloaded libraries. Please create the folder manually: "
-							+ File.separator + path);
+					ErrorMessageFormatter
+							.format("Cannot create folder for putting the downloaded libraries. Please create the folder manually: "
+									+ File.separator + path));
 		}
 		getLog().info(" ");
 		getLog().info("Downloaded bundles will be stored in " + path);
@@ -81,14 +87,14 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 		 */
 		RepositoryServerConnection server = new RepositoryServerConnection(
 				serverURL);
-		ClassPathFile classPathFile = new ClassPathFile();
 		for (String dependency : ManifestLoader.getImportedPackages()) {
 			getLog().info("Resolving: " + dependency);
 			String bundleName = server.getProvidingBundleFileName(dependency);
 			if (bundleName == null)
 				throw new MojoFailureException(
-						"There's no bundle that can solve this dependency: "
-								+ dependency);
+						ErrorMessageFormatter
+								.format("There's no bundle that can solve this dependency: "
+										+ dependency));
 			if (!new File(path + bundleName).exists()) {
 				server.downloadBundle(path, bundleName, dependency);
 				getLog().info(" * Downloaded " + bundleName + ".");
@@ -98,9 +104,7 @@ public class OSGiRepositoryDownloaderMojo extends AbstractMojo {
 								+ " previously downloaded (delete it from "
 								+ path + " if you want to download it again).");
 			}
-			classPathFile.addLibraryEntry(path, bundleName);
 		}
-		classPathFile.save();
 		getLog().info(
 				"==========================================================");
 		getLog().info(

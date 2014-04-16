@@ -1,4 +1,4 @@
-package SimpleOSGiRepository.plugin;
+package simple.plugin.filemanipulators;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
+
+import simple.plugin.utils.ErrorMessageFormatter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -48,7 +50,8 @@ public final class ClassPathFile {
 		classPathFile = new File(".classpath");
 		if (!classPathFile.exists())
 			throw new MojoExecutionException(
-					"There is no .classpath file in this project's root directory. Is this a valid Eclipse project?");
+					ErrorMessageFormatter
+							.format("There is no .classpath file in this project's root directory. Is this a valid Eclipse project?"));
 		/*
 		 * Try to read each line.
 		 */
@@ -58,7 +61,8 @@ public final class ClassPathFile {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Error reading the .classpath file. Access denied?");
+					ErrorMessageFormatter
+							.format("Error reading the .classpath file. Access denied?"));
 		}
 		/*
 		 * Add an informative comment in the classpath file in the section we're
@@ -75,7 +79,9 @@ public final class ClassPathFile {
 		 * Couldn't find the </classpath> tag?
 		 */
 		if (!tagFound)
-			throw new MojoExecutionException("The classpath file is corrupted!");
+			throw new MojoExecutionException(
+					ErrorMessageFormatter
+							.format("The classpath file is corrupted!"));
 	}
 
 	/**
@@ -139,11 +145,13 @@ public final class ClassPathFile {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Error writting to the .classpath file. Access denied?");
+					ErrorMessageFormatter
+							.format("Error writting to the .classpath file. Access denied?"));
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new MojoExecutionException(
-					"Error writting to the .classpath file. Access denied?");
+					ErrorMessageFormatter
+							.format("Error writting to the .classpath file. Access denied?"));
 		}
 	}
 }
