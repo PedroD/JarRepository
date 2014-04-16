@@ -1082,6 +1082,19 @@
 		<package name="org.xml.sax.helpers" version="0.0.0" />
 	</imported>
 </jar>
+	<jar name="jars\javax.servlet.jsp_2.0.0.v200806031607.jar">
+	<exported>
+		<package name="javax.servlet.jsp.el" version="0.0.0" />
+		<package name="javax.servlet.jsp.tagext" version="0.0.0" />
+		<package name="javax.servlet.jsp.resources" version="0.0.0" />
+		<package name="javax.servlet.jsp" version="0.0.0" />
+	</exported>
+	<imported>
+		<package name="javax.servlet" version="0.0.0" />
+		<package name="javax.servlet.resources" version="0.0.0" />
+		<package name="javax.servlet.http" version="0.0.0" />
+	</imported>
+</jar>
 	<jar name="jars\codebase_1.0.0.jar">
 	<exported>
 		<package name="codebase.binary" version="1.0.0" />
@@ -1095,19 +1108,6 @@
 	<imported>
 		<package name="junit.framework" version="0.0.0" />
 		<package name="junit.textui" version="0.0.0" />
-	</imported>
-</jar>
-	<jar name="jars\javax.servlet.jsp_2.0.0.v200806031607.jar">
-	<exported>
-		<package name="javax.servlet.jsp.el" version="0.0.0" />
-		<package name="javax.servlet.jsp.tagext" version="0.0.0" />
-		<package name="javax.servlet.jsp.resources" version="0.0.0" />
-		<package name="javax.servlet.jsp" version="0.0.0" />
-	</exported>
-	<imported>
-		<package name="javax.servlet" version="0.0.0" />
-		<package name="javax.servlet.resources" version="0.0.0" />
-		<package name="javax.servlet.http" version="0.0.0" />
 	</imported>
 </jar>
 	<jar name="jars\org.eclipse.equinox.http.servlet_1.1.0.v20100503.jar">

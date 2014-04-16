@@ -6,8 +6,8 @@
 	<version>0.0.1</version>
 	<description>Lumina Kernel</description>
 	<name>${bundle.symbolicName} [${bundle.namespace}]</name>
-	<packaging>eclipse-plugin</packaging>
-	
+	<packaging>jar</packaging>
+
 	<distributionManagement>
 		<repository>
 			<id>deployment</id>
@@ -42,28 +42,21 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<extensions>true</extensions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<archive>
+						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho.version}</version>
+				<groupId>simplesolutions</groupId>
+				<artifactId>SimpleOSGiRepository-maven-plugin</artifactId>
 				<configuration>
-					<target>
-						<artifact>
-							<groupId>lumina</groupId>
-							<artifactId>lumina.kernel</artifactId>
-							<version>${project.version}</version>
-						</artifact>
-					</target>
+					<serverURL>localhost</serverURL>
 				</configuration>
+				<version>0.0.1</version>
 			</plugin>
 		</plugins>
 	</build>

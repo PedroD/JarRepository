@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="lumina.kernel Target File" sequenceNumber="5">
+<?pde version="3.8"?><target name="lumina.kernel Target File" sequenceNumber="6">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="codebase" version="1.0.0"/>
-<unit id="lumina.api" version="0.0.0"/>
-<unit id="lumina.deps" version="1.0.2"/>
-<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/repositories/p2-releases/.meta/p2"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.sdk" version="0.0.0"/>
-<unit id="org.junit" version="0.0.0"/>
-<unit id="org.hamcrest.core" version="0.0.0"/>
-<repository location="http://sb-buildmaster.tagus.ist.utl.pt:8082/nexus/content/groups/p2-proxies"/>
-</location>
+<location path="C:\Users\NeMewSys\Documents\GitHub\JarRepository\lumina.kernel\.settings\libs" type="Directory"/>
 </locations>
 </target>
